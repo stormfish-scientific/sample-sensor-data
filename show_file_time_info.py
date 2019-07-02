@@ -1,7 +1,17 @@
 import glob
 import json
-import dateutil.parser
+from datetime import datetime
+
 from pprint import pprint
+
+# Get the timestamp
+def timestamp_to_datetime(timestamp):
+    # Make a copy so that we don't modify the original
+    timestamp_string = str(timestamp)
+    timestamp_string = timestamp_string.replace('Z', '000')
+
+    return datetime.strptime(timestamp_string, '%Y-%m-%dT%H:%M:%S.%f')
+
 
 files = glob.glob('./export-*.json')
 
@@ -13,11 +23,14 @@ for filename in files:
 
     data = json.loads(jdata)
 
-    start = dateutil.parser.parse(data[0]['@timestamp'])
-    end = dateutil.parser.parse(data[-1]['@timestamp'])
+    start = timestamp_to_datetime(data[0]['@timestamp'])
 
-    print('File %s starts at %s and ends at %s' % (
-        filename,
-        start.strftime('%I:%M %p UTC'),
-        end.strftime('%I:%M %p UTC')
-    ))
+    pprint({'original': data[0]['@timestamp'],
+            'datetime': start})
+
+
+#    print('File %s starts at %s and ends at %s' % (
+#        filename,
+#        start.strftime('%I:%M %p UTC'),
+#        end.strftime('%I:%M %p UTC')
+#    ))
