@@ -25,9 +25,14 @@ for filename in files:
     data = json.loads(jdata)
 
     start = timestamp_to_datetime(data[0]['@timestamp'])
+    end = timestamp_to_datetime(data[-1]['@timestamp'])
 
-    pprint({'original': data[0]['@timestamp'],
-            'datetime': start})
+    print('In file %s, first record time: %s UTC, last record time %s UTC' % (
+        filename,
+        start.strftime('%I:%M:%S %p'),
+        end.strftime('%I:%M:%S %p')
+
+    ))
 
 
 #    print('File %s starts at %s and ends at %s' % (
