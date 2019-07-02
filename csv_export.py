@@ -15,7 +15,7 @@ def timestamp_to_datetime(timestamp):
 
 
 files = glob.glob('./export-*.json')
-
+files.sort()
 
 class CsvBuilder(object):
 
@@ -28,6 +28,10 @@ class CsvBuilder(object):
     def register_column(self, col):
         if str(col) not in self.headers:
             self.headers.append(str(col))
+
+    def register_columns(self, cols):
+        for col in cols:
+            self.register_column(col)
 
     def add_record_as_row(self, record):
 
@@ -54,6 +58,8 @@ class CsvBuilder(object):
 
 
 for filename in files:
+    print("Processing %s" % filename)
+
     csv = CsvBuilder()
 
     with open(filename, 'r') as f:
@@ -63,15 +69,20 @@ for filename in files:
 
     start = timestamp_to_datetime(data[0]['@timestamp'])
 
+    cols = []
     for rec in data:
         row_data = {}
         for key in rec.keys():
             if type(rec[key]) is dict:
                 if 'x' in rec[key].keys():
-                    row_data[key+'.x'] = str(rec[key]['x'])
-                    row_data[key+'.y'] = str(rec[key]['y'])
-                    row_data[key+'.z'] = str(rec[key]['z'])
+                    cols.append(key+'_x')
+                    cols.append(key+'_y')
+                    cols.append(key+'_z')
+                    row_data[key+'_x'] = str(rec[key]['x'])
+                    row_data[key+'_y'] = str(rec[key]['y'])
+                    row_data[key+'_z'] = str(rec[key]['z'])
 
+        csv.register_columns(cols)
         csv.add_record_as_row(row_data)
 
     newfilename = filename.replace('json', 'csv')
