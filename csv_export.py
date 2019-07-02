@@ -69,10 +69,12 @@ for filename in files:
 
     start = timestamp_to_datetime(data[0]['@timestamp'])
 
-    cols = []
+    cols = ['timestamp']
     for rec in data:
         row_data = {}
         for key in rec.keys():
+            row_data['timestamp'] = rec['@timestamp']
+
             if type(rec[key]) is dict:
                 if 'x' in rec[key].keys():
                     cols.append(key+'_x')
