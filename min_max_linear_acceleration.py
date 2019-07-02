@@ -1,6 +1,6 @@
 import glob
 import json
-import dateutil.parser
+
 from pprint import pprint
 
 
@@ -36,15 +36,6 @@ if __name__ == '__main__':
 
         data = json.loads(jdata)
 
-        start = dateutil.parser.parse(data[0]['@timestamp'])
-        end = dateutil.parser.parse(data[-1]['@timestamp'])
-
         min_gravity_z = find_min_value(data, 'gravity', 'z')
-
-        print('File %s starts at %s and ends at %s' % (
-            filename,
-            start.strftime('%I:%M %p UTC'),
-            end.strftime('%I:%M %p UTC')
-        ))
 
         print('  The min gravity.z value found is %f' % min_gravity_z)
